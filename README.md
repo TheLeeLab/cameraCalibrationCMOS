@@ -1,6 +1,6 @@
 # routineCameraCalibration
 
-Why calibrate your camera? If you want to convert the pixel values of your data from 'counts' to 'photons' or e.g. use a localisation algorithm that requires you to know the camera offset and gain, you need to calibrate your camera. You can also look these values up in the *birth certificate* of your camera, but the gain of EMCCD cameras can drift over time so it's recommended to regularly calibrate your camera. Unlike EMCCD cameras, CMOS cameras have a pixel-dependent offset, variance and gain. Some localisation algorithms ([Huang et al.](https://doi.org/10.1038/Nmeth.2488), [Lin et al.](https://doi.org/10.1364/OE.25.011701)) use those pixel-dependent offset, variance and gain maps and you can measure them by calibrating your camera.
+Why calibrate your camera? If you want to convert the pixel values of your data from 'counts' to 'photons' or e.g. use a localisation algorithm that requires you to know the camera offset and gain, you need to calibrate your camera. You can also look these values up in the *birth certificate* of your camera, but the gain of EMCCD cameras can drift over time so it's recommended to regularly calibrate your camera. Unlike EMCCD cameras, CMOS cameras have a pixel-dependent offset, variance and gain. Some localisation algorithms ([Huang *et al.*](https://doi.org/10.1038/Nmeth.2488), [Lin *et al.*](https://doi.org/10.1364/OE.25.011701)) use those pixel-dependent offset, variance and gain maps and you can measure them by calibrating your camera.
 
 ## Instructions for quick routine camera calibration: ##
 Calibrating your camera is very easy when your microscope has a brightfield lamp with an intensity that you can varry. Follow the following steps:
@@ -19,7 +19,7 @@ Calibrating your camera is very easy when your microscope has a brightfield lamp
    * gain.tif, variance.tif and offset.tif maps
    * regression.png a figure of the regression to determine the gain. It should be a nice linear fit.
 
-An explanation of how the code estimates the offset, variance and gain can be found in the supplementary material of [Huang et al.](https://doi.org/10.1038/Nmeth.2488).
+An explanation of how the code estimates the offset, variance and gain can be found in the supplementary material of [Huang *et al.*](https://doi.org/10.1038/Nmeth.2488)
 
 
 ## Troubleshooting and tips: ##
@@ -28,4 +28,4 @@ An explanation of how the code estimates the offset, variance and gain can be fo
 
 **Tip 2:** If you don't have brightfield lamp on your microscope with adjustable intensity, you can use another lamp and layer lens tissues to decrease the intensity in steps. You can also use your laser as a light source if you have a fluorescent slide (e.g. those from Chroma) instead of a piece of paper. The latter works best when your illumination profile is flat over your roi.
 
-**Tip 3:** If you have an sCMOS camera and want to get pixel-dependet gain, offset and variance maps, you should take more than 100 frames for each stack. Aim for something on the order of 10k-60k frames per intensity level (these numbers come from the methods section of [Huang et al.](https://doi.org/10.1038/Nmeth.2488) and [Diekmann et al.](https://doi.org/10.1038/s41598-017-14762-6)). I know that's a lot of data and MicroManager or whatever software you are using for image acquisition might start chopping up the stacks into 'dark_0.tif', 'dark_1.tif', 'dark_2.tif' etc. The code will automatically group these stacks. The code also never reads a whole stack into memory, only a single frame at a time.
+**Tip 3:** If you have an sCMOS camera and want to get pixel-dependet gain, offset and variance maps, you should take more than 100 frames for each stack. Aim for something on the order of 10k-60k frames per intensity level (these numbers come from the methods section of [Huang *et al.*](https://doi.org/10.1038/Nmeth.2488) and [Diekmann *et al.*](https://doi.org/10.1038/s41598-017-14762-6)). I know that's a lot of data and MicroManager or whatever software you are using for image acquisition might start chopping up the stacks into 'dark_0.tif', 'dark_1.tif', 'dark_2.tif' etc. The code will automatically group these stacks. The code also never reads a whole stack into memory, only a single frame at a time.
