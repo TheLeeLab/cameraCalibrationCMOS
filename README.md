@@ -5,17 +5,17 @@ This repository contains MATLAB code and instructions for performing a routine c
 
 ## Instructions for quick routine camera calibration: ##
 Calibrating your camera is very easy when your microscope has a brightfield lamp with an intensity that you can varry. Follow the following steps:
-1) After recording your data, take off your sample and replace it with a piece of paper or a lens tissue. Don't change the settings of your camera, you want to use the same gain, roi etc that you used for recording your sample. The purpose of placing a piece of paper or lens tissue as a sample is to get an approximately uniform intensity in the image. 
-2) Acquire 100 dark frames (all lights and lasers off) and call the stack 'dark.tif'
-3) Turn the brightfield lamp on and acquire 100 frames at a low intensity. Call the stack 'int1.tif'.
-4) Repeat the previous step but at a higher intensity of the brightfield lamp. Call the stacks 'int2.tif', 'int3.tif' and 'int4.tif', where you increase the intensity each time.
+* After recording your data, take off your sample and replace it with a piece of paper or a lens tissue. Don't change the settings of your camera, you want to use the same gain, roi etc that you used for recording your sample. The purpose of placing a piece of paper or lens tissue as a sample is to get an approximately uniform intensity in the image. 
+* Acquire 100 dark frames (all lights and lasers off) and call the stack 'dark.tif'
+* Turn the brightfield lamp on and acquire 100 frames at a low intensity. Call the stack 'int1.tif'.
+* Repeat the previous step but at a higher intensity of the brightfield lamp. Call the stacks 'int2.tif', 'int3.tif' and 'int4.tif', where you increase the intensity each time.
 
 
 ## Instructions for analysing the data: ##
 
-1) Double-check that you used the correct filenaming convention as explained in the instructions above. All the data for the camera caibration should be in one folder.
-2) Open the script *calibrateCamera.m* in MATLAB and run it. A window will pop up asking you to navigate to the folder.
-3) The script will create a new folder inside the folder that contains the calibration data. It contains the following files:
+* Double-check that you used the correct filenaming convention as explained in the instructions above. All the data for the camera caibration should be in one folder.
+* Open the script *calibrateCamera.m* in MATLAB and run it. A window will pop up asking you to navigate to the folder.
+* The script will create a new folder inside the folder that contains the calibration data. It contains the following files:
    * a text file with the estimated average gain and offset (also called bias)
    * gain.tif, variance.tif and offset.tif maps
    * regression.png a figure of the regression to determine the gain. It should be a nice linear fit.
