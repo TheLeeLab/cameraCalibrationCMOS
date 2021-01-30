@@ -19,6 +19,8 @@ Calibrating your camera is very easy when your microscope has a brightfield lamp
    * gain.tif, variance.tif and offset.tif maps
    * regression.png a figure of the regression to determine the gain. It should be a nice linear fit.
 
+An explanation of how the code estimates the offset, variance and gain can be found in the supplementary material of [Huang et al.](https://doi.org/10.1038/Nmeth.2488).
+
 
 ## Troubleshooting and tips: ##
 
