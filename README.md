@@ -19,13 +19,13 @@ Calibrating your camera is very easy when your microscope has a brightfield lamp
 ## Instructions for analysing the data: ##
 
 * Double-check that you used the correct filenaming convention as explained in the instructions above. All the data for the camera calibration should be in one folder.
-* Open the script *calibrateCamera.m* in MATLAB and run it. A window will pop up asking you to navigate to the folder.
-* The script will create a new folder inside the folder that contains the calibration data. It contains the following files:
-   * a text file with the estimated average gain and offset (also called bias)
-   * gain.tif, variance.tif and offset.tif maps
-   * regression.png a figure of the regression to determine the gain. It should be a nice linear fit.
+* Open the script *calibrateCamera.m* in MATLAB and fill in the parameters: the path to the folder containing the stacks and part of the name of the dark and bright images.
+* Run the script. It will create a new folder inside the folder that contains the calibration data and save
+   * a file 'results.mat' which you can load in matlab and contains a structure with 6 elements: the average offset, variance and gain, and the pixel-dependent offset, variance and gain maps
+   * 3 matlab figures showing the pixel-dependent maps and corresponding histograms of their pixel values
+   * a matlab figure showing the data and linear fit used to estimate the gain
 
-An explanation of how the code estimates the offset, variance and gain can be found in the supplementary material of [Huang *et al.*](https://doi.org/10.1038/Nmeth.2488)
+The estimation of the offset, variance and gain was implemented as described in the supplementary material of [Huang *et al.*](https://doi.org/10.1038/Nmeth.2488)
 
 
 ## Troubleshooting and tips: ##
