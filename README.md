@@ -1,6 +1,6 @@
 # routineCameraCalibration
 
-Why calibrate your camera? If you want to compare the intensities of images recorded on different instruments or with different acquisition settings (e.g. different em gain), you need to convert the pixel values from analog-to-digital units (camera counts) to photons:
+Why calibrate your camera? If you want to compare the intensities of images recorded on different instruments or with different acquisition settings (e.g. different em gain), you need to convert the pixel values from analog-to-digital (ADU) units to photons:
 
 <p align="center">
 intensity (photons) = [intensity (ADU counts) - offset]/gain
