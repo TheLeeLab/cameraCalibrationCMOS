@@ -3,7 +3,7 @@
 Why calibrate your camera? If you want to convert the pixel values of your data from 'counts' to 'photons' or e.g. use a localisation algorithm that requires you to know the camera offset and gain, you need to calibrate your camera. You can also look these values up in the *birth certificate* of your camera, but the gain of EMCCD cameras can drift over time so it's recommended to regularly calibrate your camera. Unlike EMCCD cameras, CMOS cameras have a pixel-dependent offset, variance and gain. Some localisation algorithms ([Huang *et al.*](https://doi.org/10.1038/Nmeth.2488), [Lin *et al.*](https://doi.org/10.1364/OE.25.011701)) use those pixel-dependent offset, variance and gain maps and you can measure them by calibrating your camera.
 
 ## Instructions for quick routine camera calibration: ##
-Calibrating your camera is very easy when your microscope has a brightfield lamp with an intensity that you can varry. Follow the following steps:
+Calibrating your camera is very easy when your microscope has a brightfield lamp with an intensity that you can vary. Follow the following steps:
 * After recording your data, take off your sample and replace it with a piece of paper or a lens tissue. Don't change the settings of your camera, you want to use the same gain, roi etc that you used for recording your sample. The purpose of placing a piece of paper or lens tissue as a sample is to get an approximately uniform intensity in the image. 
 * Acquire 100 dark frames (all lights and lasers off) and call the stack 'dark.tif'
 * Turn the brightfield lamp on and acquire 100 frames at a low intensity. Call the stack 'int1.tif'.
