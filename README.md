@@ -38,4 +38,4 @@ The estimation of the offset, variance and gain was implemented as described in 
 
 **Tip 4:** The brightness of your lamp should be constant during each stack. If your lamp flickers or has a fluctuating brightness, this can negatively affect your results.
 
-**Tip 5:** If your images don't have a uniform intensity, the pixel-dependent offset, variance and gain maps will still be accurate, but the average offset, variance and gain probably won't be. Getting uniform intensity can be pretty difficult when you try to calibrate a full chip at once. For small regions (e.g. 512x512 pixels) it is not.
+**Tip 5:** If your images don't have a uniform intensity, the pixel-dependent offset, variance and gain maps will still be accurate, but the average offset, variance and gain probably won't be. Getting uniform intensity for small regions (e.g. 512x512 pixels) is not hard, but it can be more tricky when you want to calibrate a large sCMOS chip in one go.
