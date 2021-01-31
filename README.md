@@ -12,7 +12,7 @@ Calibrating your camera is very easy when your microscope has a brightfield lamp
 
 ## Instructions for analysing the data: ##
 
-* Double-check that you used the correct filenaming convention as explained in the instructions above. All the data for the camera caibration should be in one folder.
+* Double-check that you used the correct filenaming convention as explained in the instructions above. All the data for the camera calibration should be in one folder.
 * Open the script *calibrateCamera.m* in MATLAB and run it. A window will pop up asking you to navigate to the folder.
 * The script will create a new folder inside the folder that contains the calibration data. It contains the following files:
    * a text file with the estimated average gain and offset (also called bias)
