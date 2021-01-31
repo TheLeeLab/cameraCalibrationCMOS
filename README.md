@@ -4,7 +4,7 @@ Why calibrate your camera? If you want to compare the intensities of images reco
 
 <p align="center">
 intensity (photons) = (intensity (ADU counts) - offset)/gain
-<\p>
+</p>
 
 The offset and gain can be measured by doing a camera calibration which involves recording uniform images at different intensities. Most localisation algorithms require you to know the camera offset and gain. You can also look these values up in the *birth certificate* of your camera, but the gain of EMCCD cameras can drift over time so it's recommended to regularly calibrate your camera. Unlike EMCCD cameras, CMOS cameras have a pixel-dependent offset, variance and gain. Some localisation algorithms ([Huang *et al.*](https://doi.org/10.1038/Nmeth.2488), [Lin *et al.*](https://doi.org/10.1364/OE.25.011701)) use those pixel-dependent offset, variance and gain maps and you can measure them by calibrating your camera.
 
