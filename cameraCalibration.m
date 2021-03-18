@@ -15,7 +15,8 @@
 %  - the script only reads one frame at a time into memory
 %  - if you acquired long stacks and they got cut up into substacks by your
 %    acquisition software (e.g. dark_0.tif, dark_1.tif, dark_2.tif ...),
-%    the code will automatically group them
+%    the code will automatically group them assuming this style of adding a
+%    suffix with an underscore and number (common)
 
 clear all; close all; clc
 
@@ -23,15 +24,15 @@ clear all; close all; clc
 % Parameters
 
 % path to the folder containing the calibration stacks
-directory = 'E:\data\PolCam manuscript\20210129_SYTOX orange on glass\metadata\camera calibration';
+directory = 'D:\data\20210312_fibrils nile red super-res LDI-7\metadata\camera calibration';
 
 % name of the dark stack without extension or suffix (e.g. 'dark' if the
 % is called dark.tif, or if the are multiple substacks dark_0.tif, dark_1.tif, dark_2.tif ...)
-dark_id   = 'blanks';
+dark_id   = 'blank';
 
 % list of the names of the bright stacks without extension or suffix (like
 % above), ordered from dimmest to brightest
-power_ids = {'int1','int2','int3','int4','int5','int6'};
+power_ids = {'level1','level2','level3','level4','level5','level6','level7','level8'};
 
 
 
@@ -39,9 +40,11 @@ power_ids = {'int1','int2','int3','int4','int5','int6'};
 
 disp('+++ Camera calibration +++'); disp(' ')
 
-% make output folder
+% make output folders
 outputdir = fullfile(directory,'calibration results');
 if ~exist(outputdir,'dir'); mkdir(outputdir); end
+outputdir_fig = fullfile(outputdir,'figures');
+if ~exist(outputdir_fig,'dir'); mkdir(outputdir_fig); end
 
 % estimate offset
 disp('Calculating offset...')
@@ -52,21 +55,21 @@ subplot(2,4,[1,2,5,6]); imshow(offset,[]); colorbar; title('Offset')
 subplot(2,4,[3,4]); histogram(offset,'edgeColor','none','faceColor','k'); xlabel('Offset'); ylabel('Occurence')
 subplot(2,4,[7,8]); histogram(offset,'edgeColor','none','faceColor','k'); xlabel('Offset'); ylabel('Occurence (log scale)'); set(gca,'Yscale','log')
 set(gcf,'position',[100,100,1400,500]);
-savefig(fullfile(outputdir,'offset.fig'))
+savefig(fullfile(outputdir_fig,'offset.fig'))
 
 
 %%
 
 % estimate dark variance
-disp('Calculating variance...')
+disp('Calculating variance (read noise) ...')
 variance = calculateVariance(offset,dark_id,directory);
 figure;
 set(0,'DefaultAxesTitleFontWeight','normal');
-subplot(2,4,[1,2,5,6]); imshow(variance,[]); colorbar; title('Variance')
+subplot(2,4,[1,2,5,6]); imshow(variance,[]); colorbar; title('Variance dark frames (read noise)')
 subplot(2,4,[3,4]); histogram(variance,'edgeColor','none','faceColor','k'); xlabel('Variance'); ylabel('Occurence')
 subplot(2,4,[7,8]); histogram(variance,'edgeColor','none','faceColor','k'); xlabel('Variance'); ylabel('Occurence (log scale)'); set(gca,'Yscale','log')
 set(gcf,'position',[100,100,1400,500]);
-savefig(fullfile(outputdir,'variance.fig'))
+savefig(fullfile(outputdir_fig,'variance_read_noise.fig'))
 
 % estimate gain
 disp('Calculating gain...')
@@ -93,7 +96,7 @@ subplot(2,4,[1,2,5,6]); imshow(gain,[]); colorbar; title('Gain')
 subplot(2,4,[3,4]); histogram(gain,'edgeColor','none','faceColor','k'); xlabel('Gain'); ylabel('Occurence')
 subplot(2,4,[7,8]); histogram(gain,'edgeColor','none','faceColor','k'); xlabel('Gain'); ylabel('Occurence (log scale)'); set(gca,'Yscale','log')
 set(gcf,'position',[100,100,1400,500]);
-savefig(fullfile(outputdir,'gain.fig'))
+savefig(fullfile(outputdir_fig,'gain.fig'))
 
 % Plot regression figure
 avgCorrectedVariances   = nanmean(A,1:2); avgCorrectedVariances = avgCorrectedVariances(:);
@@ -112,17 +115,25 @@ ylim([0,1.1*max(avgCorrectedVariances(end),avgCorrectedIntensities(end))])
 set(0,'DefaultAxesTitleFontWeight','normal');
 title({'The slope is the average gain,',sprintf('g = %.3f +- %.3f',nanmean(gain(:)),nanstd(gain(:)))})
 set(gcf,'position',[100,100,500,500]); set(gca,'fontsize',10)
-savefig(fullfile(outputdir,'gain_regression.fig'))
+savefig(fullfile(outputdir_fig,'gain_regression.fig'))
 
 
 %% Save results
 
 % Print results to command window
-fprintf('\nThe average offset   is: %.3f +- %.3f ADU counts\n',nanmean(offset(:)),nanstd(offset(:)))                                   
-fprintf('The average variance is: %.3f +- %.3f ADU counts\n',nanmean(variance(:)),nanstd(variance(:)))                                   
-fprintf('The average gain     is: %.3f +- %.3f ADU counts/photon\n',nanmean(gain(:)),nanstd(gain(:)))                                   
+fprintf('\nThe average offset     is: %.3f +- %.3f ADU counts\n',nanmean(offset(:)),nanstd(offset(:)))                                   
+fprintf('The average read noise is: %.3f +- %.3f ADU counts\n',nanmean(variance(:)),nanstd(variance(:)))                                   
+fprintf('The average gain       is: %.3f +- %.3f ADU counts/photoelectron\n',nanmean(gain(:)),nanstd(gain(:)))                                   
 fprintf('* ADU = analog-to-digital unit\n\n')                                   
 
+% Write the same to a text file
+fileID = fopen(fullfile(outputdir,'results_summary.txt'),'w');
+fprintf(fileID,sprintf('average offset: %.3f +- %.3f ADU counts\n',nanmean(offset(:)),nanstd(offset(:))));
+fprintf(fileID,sprintf('average read noise: %.3f +- %.3f ADU counts\n',nanmean(variance(:)),nanstd(variance(:))));
+fprintf(fileID,sprintf('average gain: %.3f +- %.3f ADU counts/photoelectron\n',nanmean(gain(:)),nanstd(gain(:))));
+fclose(fileID);
+
+% save results as a .mat file
 results = struct;
 results.offset_map   = offset;
 results.variance_map = variance;
@@ -130,14 +141,17 @@ results.gain_map     = gain;
 results.offset   = nanmean(offset,'all');
 results.variance = nanmean(variance,'all');
 results.gain     = nanmean(gain,'all');
-
 save(fullfile(outputdir,'results.mat'),'results');
 
-disp('Results saved in "'+string(outputdir)+'"')
-disp('  1. pixel-dependent offset, variance and gain maps')
-disp('  2. average offset, variance and gain')
-disp('  3. regression curve used for estimating gain')
+% save offset_map, variance_map and gain_map as single precision tifs
+writeTifImage(offset,fullfile(outputdir,'offset_map.tif'))
+writeTifImage(variance,fullfile(outputdir,'variance_map.tif'))
+writeTifImage(gain,fullfile(outputdir,'gain_map.tif'))
 
+disp('Results saved in "'+string(outputdir)+'"')
+disp('  1. pixel-dependent offset, variance (read noise) and gain maps')
+disp('  2. average offset, variance (read noise) and gain')
+disp('  3. regression curve used for estimating gain')
 
 %% Functions
 
@@ -181,4 +195,19 @@ for i=1:numFiles
     framesCounter = framesCounter + frames;
 end
 variance = variance/framesCounter;
+end
+
+function [] = writeTifImage(image,path)
+t = Tiff(path,'w');
+tagstruct.ImageLength = size(image,1);
+tagstruct.ImageWidth = size(image,2);
+tagstruct.Compression = Tiff.Compression.None;
+tagstruct.SampleFormat = Tiff.SampleFormat.IEEEFP;
+tagstruct.Photometric = Tiff.Photometric.LinearRaw;
+tagstruct.BitsPerSample = 32;
+tagstruct.SamplesPerPixel = 1;
+tagstruct.PlanarConfiguration = Tiff.PlanarConfiguration.Chunky;
+t.setTag(tagstruct);
+t.write(single(image));
+t.close();
 end
