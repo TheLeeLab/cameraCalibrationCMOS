@@ -22,6 +22,7 @@ Calibrating your camera is very easy when your microscope has a brightfield lamp
 * Open the script *calibrateCamera.m* in MATLAB and fill in the parameters: the path to the folder containing the stacks and part of the name of the dark and bright images.
 * Run the script. It will create a new folder inside the folder that contains the calibration data and save
    * a file 'results.mat' which you can load in matlab and contains a structure with 6 elements: the average offset, variance and gain, and the pixel-dependent offset, variance and gain maps
+   * a tif file for the pixel-dependent offset, variance and gain maps
    * 3 matlab figures showing the pixel-dependent maps and corresponding histograms of their pixel values
    * a matlab figure showing the data and linear fit used to estimate the gain
 
