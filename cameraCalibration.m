@@ -61,15 +61,15 @@ savefig(fullfile(outputdir_fig,'offset.fig'))
 %%
 
 % estimate dark variance
-disp('Calculating variance (read noise) ...')
+disp('Calculating variance dark frames...')
 variance = calculateVariance(offset,dark_id,directory);
 figure;
 set(0,'DefaultAxesTitleFontWeight','normal');
-subplot(2,4,[1,2,5,6]); imshow(variance,[]); colorbar; title('Variance dark frames (read noise)')
+subplot(2,4,[1,2,5,6]); imshow(variance,[]); colorbar; title('Variance dark frames')
 subplot(2,4,[3,4]); histogram(variance,'edgeColor','none','faceColor','k'); xlabel('Variance'); ylabel('Occurence')
 subplot(2,4,[7,8]); histogram(variance,'edgeColor','none','faceColor','k'); xlabel('Variance'); ylabel('Occurence (log scale)'); set(gca,'Yscale','log')
 set(gcf,'position',[100,100,1400,500]);
-savefig(fullfile(outputdir_fig,'variance_read_noise.fig'))
+savefig(fullfile(outputdir_fig,'variance_dark_frames.fig'))
 
 % estimate gain
 disp('Calculating gain...')
@@ -118,39 +118,58 @@ set(gcf,'position',[100,100,500,500]); set(gca,'fontsize',10)
 savefig(fullfile(outputdir_fig,'gain_regression.fig'))
 
 
+% Get read noise
+readnoise = variance./gain;
+figure;
+set(0,'DefaultAxesTitleFontWeight','normal');
+subplot(2,4,[1,2,5,6]); imshow(readnoise,[]); colorbar; title('Read noise (variance dark frames/gain)')
+subplot(2,4,[3,4]); histogram(readnoise,'edgeColor','none','faceColor','k'); xlabel('Read noise'); ylabel('Occurence')
+subplot(2,4,[7,8]); histogram(readnoise,'edgeColor','none','faceColor','k'); xlabel('Read noise'); ylabel('Occurence (log scale)'); set(gca,'Yscale','log')
+set(gcf,'position',[100,100,1400,500]);
+savefig(fullfile(outputdir_fig,'read_noise.fig'))
+
+
 %% Save results
 
 % Print results to command window
 fprintf('\nThe average offset     is: %.3f +- %.3f ADU counts\n',nanmean(offset(:)),nanstd(offset(:)))                                   
-fprintf('The average read noise is: %.3f +- %.3f ADU counts\n',nanmean(variance(:)),nanstd(variance(:)))                                   
+fprintf('The average variance   is: %.3f +- %.3f ADU counts\n',nanmean(variance(:)),nanstd(variance(:)))                                   
 fprintf('The average gain       is: %.3f +- %.3f ADU counts/photoelectron\n',nanmean(gain(:)),nanstd(gain(:)))                                   
+fprintf('The average read noise is: %.3f +- %.3f photoelectrons\n',nanmean(readnoise(:)),nanstd(readnoise(:)))                                   
+fprintf('The median  read noise is: %.3f photoelectrons\n',nanmedian(readnoise(:)))                                   
+fprintf('The RMS read noise     is: %.3f photoelectrons\n',rms(readnoise(:)))
 fprintf('* ADU = analog-to-digital unit\n\n')                                   
 
 % Write the same to a text file
 fileID = fopen(fullfile(outputdir,'results_summary.txt'),'w');
-fprintf(fileID,sprintf('average offset: %.3f +- %.3f ADU counts\n',nanmean(offset(:)),nanstd(offset(:))));
-fprintf(fileID,sprintf('average read noise: %.3f +- %.3f ADU counts\n',nanmean(variance(:)),nanstd(variance(:))));
-fprintf(fileID,sprintf('average gain: %.3f +- %.3f ADU counts/photoelectron\n',nanmean(gain(:)),nanstd(gain(:))));
+fprintf(fileID,sprintf('average offset: %.3f +- %.3f ADU counts\n\n',nanmean(offset(:)),nanstd(offset(:))));
+fprintf(fileID,sprintf('average gain: %.3f +- %.3f ADU counts/photoelectron\n\n',nanmean(gain(:)),nanstd(gain(:))));
+fprintf(fileID,sprintf('average read noise is: %.3f +- %.3f photoelectrons\n',nanmean(readnoise(:)),nanstd(readnoise(:))));
+fprintf(fileID,sprintf('median  read noise is: %.3f photoelectrons\n',nanmedian(readnoise(:))));
+fprintf(fileID,sprintf('RMS     read noise is: %.3f photoelectrons\n',rms(readnoise(:))));
 fclose(fileID);
 
 % save results as a .mat file
 results = struct;
-results.offset_map   = offset;
-results.variance_map = variance;
-results.gain_map     = gain;
-results.offset   = nanmean(offset,'all');
-results.variance = nanmean(variance,'all');
-results.gain     = nanmean(gain,'all');
+results.offset_map    = offset;
+results.variance_map  = variance;
+results.gain_map      = gain;
+results.readnoise_map = gain;
+results.offset        = nanmean(offset,'all');
+results.variance      = nanmean(variance,'all');
+results.gain          = nanmean(gain,'all');
+results.readnoise     = nanmean(readnoise,'all');
 save(fullfile(outputdir,'results.mat'),'results');
 
 % save offset_map, variance_map and gain_map as single precision tifs
-writeTifImage(offset,fullfile(outputdir,'offset_map.tif'))
-writeTifImage(variance,fullfile(outputdir,'variance_map.tif'))
-writeTifImage(gain,fullfile(outputdir,'gain_map.tif'))
+writeTifImage(offset,fullfile(outputdir,'pixelmap_offset.tif'))
+writeTifImage(variance,fullfile(outputdir,'pixelmap_variance.tif'))
+writeTifImage(gain,fullfile(outputdir,'pixelmap_gain.tif'))
+writeTifImage(readnoise,fullfile(outputdir,'pixelmap_readnoise.tif'))
 
 disp('Results saved in "'+string(outputdir)+'"')
-disp('  1. pixel-dependent offset, variance (read noise) and gain maps')
-disp('  2. average offset, variance (read noise) and gain')
+disp('  1. pixel-dependent offset, variance, gain and read noise maps')
+disp('  2. average offset, variance, gain and read noise')
 disp('  3. regression curve used for estimating gain')
 
 %% Functions
