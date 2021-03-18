@@ -13,7 +13,7 @@ Calibrating your camera is very easy when your microscope has a brightfield lamp
 * After recording your data, take off your sample and replace it with a piece of paper or a lens tissue. Don't change the settings of your camera, you want to use the same gain, roi etc that you used for recording your sample. The purpose of placing a piece of paper or lens tissue as a sample is that it acts like a diffuser to get an approximately uniform intensity in the image. 
 * Acquire 100 dark frames (all lights and lasers off) and call the stack 'dark.tif'
 * Turn the brightfield lamp on and acquire 100 frames at a low intensity. Call the stack 'int1.tif'.
-* Repeat the previous step but at a higher intensity of the brightfield lamp. Call the stacks 'int2.tif', 'int3.tif' and 'int4.tif', where you increase the intensity each time.
+* Repeat the previous step multiple times, each time using a higher intensity of the brightfield lamp. Call the stacks 'int2.tif', 'int3.tif' and 'int4.tif' etc.
 
 
 ## Instructions for analysing the data: ##
