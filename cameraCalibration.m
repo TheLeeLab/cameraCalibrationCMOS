@@ -28,11 +28,11 @@ directory = 'D:\data\20210312_fibrils nile red super-res LDI-7\metadata\camera c
 
 % name of the dark stack without extension or suffix (e.g. 'dark' if the
 % is called dark.tif, or if the are multiple substacks dark_0.tif, dark_1.tif, dark_2.tif ...)
-dark_id   = 'blank';
+dark_id   = 'dark';
 
 % list of the names of the bright stacks without extension or suffix (like
 % above), ordered from dimmest to brightest
-power_ids = {'level1','level2','level3','level4','level5','level6','level7','level8'};
+power_ids = {'int1','int2','int3','int4','int5','int6','int7','int8'};
 
 
 
