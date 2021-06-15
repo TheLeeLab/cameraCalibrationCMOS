@@ -24,7 +24,8 @@ clear all; close all; clc
 % Parameters
 
 % path to the folder containing the calibration stacks
-directory = 'D:\data\20210312_fibrils nile red super-res LDI-7\metadata\camera calibration';
+% directory = 'D:\data\20210312_fibrils nile red super-res LDI-7\metadata\camera calibration';
+directory = 'testdata';
 
 % name of the dark stack without extension or suffix (e.g. 'dark' if the
 % is called dark.tif, or if the are multiple substacks dark_0.tif, dark_1.tif, dark_2.tif ...)
@@ -32,7 +33,7 @@ dark_id   = 'dark';
 
 % list of the names of the bright stacks without extension or suffix (like
 % above), ordered from dimmest to brightest
-power_ids = {'int1','int2','int3','int4','int5','int6','int7','int8'};
+power_ids = {'int1','int2','int3','int4','int5'};
 
 
 
@@ -52,8 +53,8 @@ offset = calculateOffset(dark_id,directory);
 figure;
 set(0,'DefaultAxesTitleFontWeight','normal');
 subplot(2,4,[1,2,5,6]); imshow(offset,[]); colorbar; title('Offset')
-subplot(2,4,[3,4]); histogram(offset,'edgeColor','none','faceColor','k'); xlabel('Offset'); ylabel('Occurence')
-subplot(2,4,[7,8]); histogram(offset,'edgeColor','none','faceColor','k'); xlabel('Offset'); ylabel('Occurence (log scale)'); set(gca,'Yscale','log')
+subplot(2,4,[3,4]); histogram(offset,'edgeColor','none','faceColor','k'); xlabel('Offset (ADU)'); ylabel('Occurence')
+subplot(2,4,[7,8]); histogram(offset,'edgeColor','none','faceColor','k'); xlabel('Offset (ADU)'); ylabel('Occurence (log scale)'); set(gca,'Yscale','log')
 set(gcf,'position',[100,100,1400,500]);
 savefig(fullfile(outputdir_fig,'offset.fig'))
 
@@ -65,9 +66,9 @@ disp('Calculating variance dark frames...')
 variance = calculateVariance(offset,dark_id,directory);
 figure;
 set(0,'DefaultAxesTitleFontWeight','normal');
-subplot(2,4,[1,2,5,6]); imshow(variance,[]); colorbar; title('Variance dark frames')
-subplot(2,4,[3,4]); histogram(variance,'edgeColor','none','faceColor','k'); xlabel('Variance'); ylabel('Occurence')
-subplot(2,4,[7,8]); histogram(variance,'edgeColor','none','faceColor','k'); xlabel('Variance'); ylabel('Occurence (log scale)'); set(gca,'Yscale','log')
+subplot(2,4,[1,2,5,6]); imshow(variance,[]); colorbar; title('Variance dark frames');
+subplot(2,4,[3,4]); histogram(variance,'edgeColor','none','faceColor','k'); xlabel('Variance (ADU^2)'); ylabel('Occurence')
+subplot(2,4,[7,8]); histogram(variance,'edgeColor','none','faceColor','k'); xlabel('Variance (ADU^2)'); ylabel('Occurence (log scale)'); set(gca,'Yscale','log')
 set(gcf,'position',[100,100,1400,500]);
 savefig(fullfile(outputdir_fig,'variance_dark_frames.fig'))
 
@@ -93,8 +94,8 @@ end
 figure;
 set(0,'DefaultAxesTitleFontWeight','normal');
 subplot(2,4,[1,2,5,6]); imshow(gain,[]); colorbar; title('Gain')
-subplot(2,4,[3,4]); histogram(gain,'edgeColor','none','faceColor','k'); xlabel('Gain'); ylabel('Occurence')
-subplot(2,4,[7,8]); histogram(gain,'edgeColor','none','faceColor','k'); xlabel('Gain'); ylabel('Occurence (log scale)'); set(gca,'Yscale','log')
+subplot(2,4,[3,4]); histogram(gain,'edgeColor','none','faceColor','k'); xlabel('Gain (ADU/photoelectron)'); ylabel('Occurence')
+subplot(2,4,[7,8]); histogram(gain,'edgeColor','none','faceColor','k'); xlabel('Gain (ADU/photoelectron)'); ylabel('Occurence (log scale)'); set(gca,'Yscale','log')
 set(gcf,'position',[100,100,1400,500]);
 savefig(fullfile(outputdir_fig,'gain.fig'))
 
@@ -106,12 +107,10 @@ errorY = nanstd(A,0,1:2); errorY = errorY(:);
 figure;
 errorbar(avgCorrectedIntensities,avgCorrectedVariances,errorY,errorY,errorX,errorX,'ko'); hold on
 plot(avgCorrectedIntensities,avgCorrectedIntensities*nanmean(gain,'all'),'-k')
-xlabel('intensity_i - dark');
-ylabel('\sigma^2(intensity_i) - \sigma^2(dark)');
+xlabel('intensity_i - dark (ADU)');
+ylabel('\sigma^2(intensity_i) - \sigma^2(dark) (ADU^2)');
 legend('Data','Linear fit ','Location','northwest')
 axis equal; grid on
-xlim([0,1.1*max(avgCorrectedVariances(end),avgCorrectedIntensities(end))])
-ylim([0,1.1*max(avgCorrectedVariances(end),avgCorrectedIntensities(end))])
 set(0,'DefaultAxesTitleFontWeight','normal');
 title({'The slope is the average gain,',sprintf('g = %.3f +- %.3f',nanmean(gain(:)),nanstd(gain(:)))})
 set(gcf,'position',[100,100,500,500]); set(gca,'fontsize',10)
@@ -119,12 +118,12 @@ savefig(fullfile(outputdir_fig,'gain_regression.fig'))
 
 
 % Get read noise
-readnoise = variance./gain;
+readnoise = sqrt(variance)./gain;
 figure;
 set(0,'DefaultAxesTitleFontWeight','normal');
-subplot(2,4,[1,2,5,6]); imshow(readnoise,[]); colorbar; title('Read noise (variance dark frames/gain)')
-subplot(2,4,[3,4]); histogram(readnoise,'edgeColor','none','faceColor','k'); xlabel('Read noise'); ylabel('Occurence')
-subplot(2,4,[7,8]); histogram(readnoise,'edgeColor','none','faceColor','k'); xlabel('Read noise'); ylabel('Occurence (log scale)'); set(gca,'Yscale','log')
+subplot(2,4,[1,2,5,6]); imshow(readnoise,[]); colorbar; title('Read noise (stdev dark frames/gain)')
+subplot(2,4,[3,4]); histogram(readnoise,'edgeColor','none','faceColor','k'); xlabel('Read noise (photoelectrons)'); ylabel('Occurence')
+subplot(2,4,[7,8]); histogram(readnoise,'edgeColor','none','faceColor','k'); xlabel('Read noise (photoelectrons)'); ylabel('Occurence (log scale)'); set(gca,'Yscale','log')
 set(gcf,'position',[100,100,1400,500]);
 savefig(fullfile(outputdir_fig,'read_noise.fig'))
 
