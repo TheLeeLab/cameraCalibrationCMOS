@@ -3,7 +3,10 @@
 Why calibrate your camera? If you want to compare the intensities of images recorded on different instruments or images recorded with different acquisition settings (e.g. different em-gain), you need to convert the pixel values from analog-to-digital (ADU) units to photoelectrons:
 
 <p align="center">
-intensity (photoelectrons) = [intensity (ADU counts) - offset]/gain
+intensity (photoelectrons) = [intensity (ADU counts) - offset (ADU counts)]/gain (ADU counts/photoelectron)
+</p>
+<p align="center">
+intensity (photons) = intensity (photoelectrons)/QE (photoelectrons/photon)
 </p>
 
 Any analysis that takes photon statistics into account (e.g. many localisation algorithms for SMLM) will ask you for the camera gain and offset to do this conversion internally. The offset and gain can be measured by doing a camera calibration which involves recording uniform intensity images at different brightnesses. You can also look these values up in the *birth certificate* of your camera, but the gain of EMCCD cameras can drift over time so it's recommended to regularly calibrate your camera. Unlike EMCCD cameras, CMOS cameras have a pixel-dependent offset, variance and gain. Some localisation algorithms ([Huang *et al.*](https://doi.org/10.1038/Nmeth.2488), [Lin *et al.*](https://doi.org/10.1364/OE.25.011701)) use those pixel-dependent offset, variance and gain maps and you can measure them by calibrating your camera.
