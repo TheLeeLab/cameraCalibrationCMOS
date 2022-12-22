@@ -1,4 +1,4 @@
-# routineCameraCalibration
+# cameraCalibrationCMOS
 
 Why calibrate your camera? If you want to compare the intensities of images recorded on different instruments or images recorded with different acquisition settings (e.g. different em-gain), you need to convert the pixel values from analog-to-digital (ADU) units to photoelectrons:
 
