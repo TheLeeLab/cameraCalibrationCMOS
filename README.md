@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/334456718.svg)](https://zenodo.org/doi/10.5281/zenodo.10732469)
+
 # cameraCalibrationCMOS
 
 Why calibrate your camera? If you want to compare the intensities of images recorded on different instruments or images recorded with different acquisition settings (e.g. different em-gain), you need to convert the pixel values from analog-to-digital (ADU) units to photoelectrons:
